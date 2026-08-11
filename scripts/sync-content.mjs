@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
-const REPO_URL = "git@github-personal:vansh0784/url_shortner.git";
+const REPO_URL = "https://github.com/vansh0784/url_shortner.git";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 const TEMP_DIR = path.join(process.cwd(), ".content-repo");
@@ -16,16 +16,30 @@ if (fs.existsSync(TEMP_DIR)) {
   });
 }
 
-execSync(`git clone --depth 1 "${REPO_URL}" "${TEMP_DIR}"`, {
-  stdio: "inherit",
-});
-
 if (fs.existsSync(CONTENT_DIR)) {
   fs.rmSync(CONTENT_DIR, {
     recursive: true,
     force: true,
   });
 }
+
+console.log("Cloning repository...");
+
+execSync(
+  `git clone --depth 1 --filter=blob:none --sparse "${REPO_URL}" "${TEMP_DIR}"`,
+  {
+    stdio: "inherit",
+  },
+);
+
+console.log("Configuring sparse checkout...");
+
+execSync(
+  `git -C "${TEMP_DIR}" sparse-checkout set --no-cone "/*.md" "**/*.md"`,
+  {
+    stdio: "inherit",
+  },
+);
 
 fs.mkdirSync(CONTENT_DIR, {
   recursive: true,
@@ -34,7 +48,7 @@ fs.mkdirSync(CONTENT_DIR, {
 const entries = fs.readdirSync(TEMP_DIR);
 
 for (const entry of entries) {
-  if (entry === ".git" || entry === "README.md") {
+  if (entry === ".git") {
     continue;
   }
 
