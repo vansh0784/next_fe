@@ -17,6 +17,12 @@
 /.next/
 /out/
 
+# Synced knowledge content
+/content/
+
+# Temporary cloned knowledge repository
+/dummy/
+
 # production
 /build
 
