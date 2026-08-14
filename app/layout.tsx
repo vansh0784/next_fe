@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,19 +20,21 @@ export const metadata: Metadata = {
     template: "%s | Vansh's Notes",
   },
   description:
-    "Engineering concepts, system design, networking, security, and things I'm learning.",
+    "Engineering concepts, system design, networking, security, databases, and things I'm learning.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="min-h-full bg-white text-neutral-950">
-        <Header />
-
-        <main className="flex-1">{children}</main>
+      <body className="min-h-screen bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-100">
+        <ThemeProvider>
+          <Header />
+          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   );
