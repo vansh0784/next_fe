@@ -7,8 +7,6 @@ const REPO_URL = "https://github.com/vansh0784/url_shortner.git";
 const CONTENT_DIR = path.join(process.cwd(), "content");
 const TEMP_DIR = path.join(process.cwd(), ".content-repo");
 
-console.log("Syncing knowledge repository...");
-
 if (fs.existsSync(TEMP_DIR)) {
   fs.rmSync(TEMP_DIR, {
     recursive: true,
@@ -23,16 +21,12 @@ if (fs.existsSync(CONTENT_DIR)) {
   });
 }
 
-console.log("Cloning repository...");
-
 execSync(
   `git clone --depth 1 --filter=blob:none --sparse "${REPO_URL}" "${TEMP_DIR}"`,
   {
     stdio: "inherit",
   },
 );
-
-console.log("Configuring sparse checkout...");
 
 execSync(
   `git -C "${TEMP_DIR}" sparse-checkout set --no-cone "/*.md" "**/*.md"`,
@@ -64,5 +58,3 @@ fs.rmSync(TEMP_DIR, {
   recursive: true,
   force: true,
 });
-
-console.log("Knowledge repository synced successfully.");
